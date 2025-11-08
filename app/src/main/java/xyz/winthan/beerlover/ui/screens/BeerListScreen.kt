@@ -36,9 +36,9 @@ fun BeerListScreen(
         },
         floatingActionButton = {
             FloatingActionButton(
-                onClick = { /* TODO: Add action */ }
+                onClick = { /* Placeholder for future favorite functionality */ }
             ) {
-                Icon(Icons.Default.Favorite, contentDescription = "Favorite")
+                Icon(Icons.Default.Favorite, contentDescription = "Favorites")
             }
         }
     ) { paddingValues ->

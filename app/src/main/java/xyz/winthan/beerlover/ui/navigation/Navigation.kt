@@ -27,28 +27,26 @@ fun BeerNavGraph(
     navController: NavHostController,
     viewModel: BeerViewModel = viewModel()
 ) {
-    val disposables = remember { CompositeDisposable() }
-
-    DisposableEffect(Unit) {
-        onDispose {
-            disposables.clear()
-        }
-    }
-
     NavHost(
         navController = navController,
         startDestination = Screen.BeerList.route
     ) {
         composable(Screen.BeerList.route) {
             var beers by remember { mutableStateOf<List<BeerVO>>(emptyList()) }
+            val disposables = remember { CompositeDisposable() }
 
-            LaunchedEffect(Unit) {
-                viewModel.getBeers()
+            DisposableEffect(Unit) {
+                val subscription = viewModel.getBeers()
                     ?.subscribeOn(Schedulers.io())
                     ?.observeOn(AndroidSchedulers.mainThread())
                     ?.subscribe { beerList ->
                         beers = beerList
-                    }?.let { disposables.add(it) }
+                    }
+                subscription?.let { disposables.add(it) }
+
+                onDispose {
+                    disposables.clear()
+                }
             }
 
             BeerListScreen(
@@ -65,14 +63,20 @@ fun BeerNavGraph(
         ) { backStackEntry ->
             val beerId = backStackEntry.arguments?.getInt("beerId") ?: 0
             var beer by remember { mutableStateOf<BeerVO?>(null) }
+            val disposables = remember { CompositeDisposable() }
 
-            LaunchedEffect(beerId) {
-                viewModel.getSingleBeers(beerId)
-                    ?.subscribeOn(Schedulers.newThread())
+            DisposableEffect(beerId) {
+                val subscription = viewModel.getSingleBeers(beerId)
+                    ?.subscribeOn(Schedulers.io())
                     ?.observeOn(AndroidSchedulers.mainThread())
                     ?.subscribe { beerData ->
                         beer = beerData
-                    }?.let { disposables.add(it) }
+                    }
+                subscription?.let { disposables.add(it) }
+
+                onDispose {
+                    disposables.clear()
+                }
             }
 
             BeerDetailScreen(
