@@ -46,9 +46,10 @@ fun BeerNavGraph(
                 viewModel.getBeers()
                     ?.subscribeOn(Schedulers.io())
                     ?.observeOn(AndroidSchedulers.mainThread())
-                    ?.subscribe { beerList ->
-                        beers = beerList
-                    }?.let { disposables.add(it) }
+                    ?.subscribe(
+                        { beerList -> beers = beerList },
+                        { error -> /* Handle error - could add logging or error state */ }
+                    )?.let { disposables.add(it) }
             }
 
             BeerListScreen(
@@ -70,9 +71,10 @@ fun BeerNavGraph(
                 viewModel.getSingleBeers(beerId)
                     ?.subscribeOn(Schedulers.newThread())
                     ?.observeOn(AndroidSchedulers.mainThread())
-                    ?.subscribe { beerData ->
-                        beer = beerData
-                    }?.let { disposables.add(it) }
+                    ?.subscribe(
+                        { beerData -> beer = beerData },
+                        { error -> /* Handle error - could add logging or error state */ }
+                    )?.let { disposables.add(it) }
             }
 
             BeerDetailScreen(
