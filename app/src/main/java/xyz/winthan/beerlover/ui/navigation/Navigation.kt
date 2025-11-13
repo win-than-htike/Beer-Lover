@@ -1,5 +1,6 @@
 package xyz.winthan.beerlover.ui.navigation
 
+import android.util.Log
 import androidx.compose.runtime.*
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
@@ -39,9 +40,14 @@ fun BeerNavGraph(
                 val subscription = viewModel.getBeers()
                     ?.subscribeOn(Schedulers.io())
                     ?.observeOn(AndroidSchedulers.mainThread())
-                    ?.subscribe { beerList ->
-                        beers = beerList
-                    }
+                    ?.subscribe(
+                        { beerList ->
+                            beers = beerList
+                        },
+                        { error ->
+                            Log.e("BeerNavGraph", "Error loading beer list", error)
+                        }
+                    )
                 subscription?.let { disposables.add(it) }
 
                 onDispose {
@@ -69,9 +75,14 @@ fun BeerNavGraph(
                 val subscription = viewModel.getSingleBeers(beerId)
                     ?.subscribeOn(Schedulers.io())
                     ?.observeOn(AndroidSchedulers.mainThread())
-                    ?.subscribe { beerData ->
-                        beer = beerData
-                    }
+                    ?.subscribe(
+                        { beerData ->
+                            beer = beerData
+                        },
+                        { error ->
+                            Log.e("BeerNavGraph", "Error loading beer detail for id: $beerId", error)
+                        }
+                    )
                 subscription?.let { disposables.add(it) }
 
                 onDispose {
