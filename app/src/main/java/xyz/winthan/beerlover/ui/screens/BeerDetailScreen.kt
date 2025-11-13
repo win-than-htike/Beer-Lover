@@ -5,6 +5,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -58,14 +59,30 @@ fun BeerDetailScreen(
                     .verticalScroll(rememberScrollState())
                     .padding(16.dp)
             ) {
-                AsyncImage(
-                    model = beer.imageUrl,
-                    contentDescription = beer.name,
+                Box(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(300.dp),
-                    contentScale = ContentScale.Fit
-                )
+                    contentAlignment = Alignment.Center
+                ) {
+                    AsyncImage(
+                        model = beer.imageUrl,
+                        contentDescription = beer.name,
+                        modifier = Modifier.fillMaxSize(),
+                        contentScale = ContentScale.Fit,
+                        placeholder = {
+                            CircularProgressIndicator()
+                        },
+                        error = {
+                            Icon(
+                                Icons.Default.Favorite,
+                                contentDescription = "Error loading image",
+                                modifier = Modifier.size(64.dp),
+                                tint = MaterialTheme.colorScheme.error
+                            )
+                        }
+                    )
+                }
 
                 Spacer(modifier = Modifier.height(16.dp))
 

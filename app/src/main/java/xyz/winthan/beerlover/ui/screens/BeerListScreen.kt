@@ -1,6 +1,5 @@
 package xyz.winthan.beerlover.ui.screens
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
@@ -54,7 +53,12 @@ fun BeerListScreen(
         } else {
             LazyVerticalGrid(
                 columns = GridCells.Fixed(2),
-                contentPadding = paddingValues,
+                contentPadding = PaddingValues(
+                    top = paddingValues.calculateTopPadding(),
+                    bottom = paddingValues.calculateBottomPadding(),
+                    start = 8.dp,
+                    end = 8.dp
+                ),
                 modifier = modifier.fillMaxSize(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -77,10 +81,8 @@ fun BeerCard(
     modifier: Modifier = Modifier
 ) {
     Card(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(8.dp)
-            .clickable(onClick = onClick),
+        onClick = onClick,
+        modifier = modifier.fillMaxWidth(),
         elevation = CardDefaults.cardElevation(defaultElevation = 4.dp)
     ) {
         Column(
@@ -88,14 +90,29 @@ fun BeerCard(
                 .fillMaxWidth()
                 .padding(8.dp)
         ) {
-            AsyncImage(
-                model = beer.imageUrl,
-                contentDescription = beer.name,
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(150.dp),
-                contentScale = ContentScale.Fit
-            )
+                contentAlignment = Alignment.Center
+            ) {
+                AsyncImage(
+                    model = beer.imageUrl,
+                    contentDescription = beer.name,
+                    modifier = Modifier.fillMaxSize(),
+                    contentScale = ContentScale.Fit,
+                    placeholder = {
+                        CircularProgressIndicator()
+                    },
+                    error = {
+                        Icon(
+                            Icons.Default.Favorite,
+                            contentDescription = "Error loading image",
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    }
+                )
+            }
             Spacer(modifier = Modifier.height(8.dp))
             Text(
                 text = beer.name,
