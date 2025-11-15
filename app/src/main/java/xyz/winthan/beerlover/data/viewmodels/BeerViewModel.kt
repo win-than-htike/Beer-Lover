@@ -1,7 +1,7 @@
 package xyz.winthan.beerlover.data.viewmodels
 
 import android.app.Application
-import android.arch.lifecycle.AndroidViewModel
+import androidx.lifecycle.AndroidViewModel
 import io.reactivex.Flowable
 import xyz.winthan.beerlover.data.db.AppDatabase
 import xyz.winthan.beerlover.data.repository.BeerRepository
